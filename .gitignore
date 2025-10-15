@@ -1,0 +1,11 @@
+!*/
+__pycache__/*
+.vscode/*
+karen_venv/*
+models/*
+output/*
+!output/changes.html
+texts/*
+!texts/source.txt
+grammar_check.py
+grammar_diff.py
