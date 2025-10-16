@@ -12,6 +12,10 @@ REV_FILE    =   "./texts/revised.txt"
 CHG_FILE    =   "./output/changes"
 TEMPLATE    =   "./template.html"
 
+HYPHEN_LB   = re.compile(r'(?<=\w)-\s*\n\s*(?=\w)')
+MULTI_SPACE = re.compile(r'[ \t]{2,}')
+MULTI_NL    = re.compile(r'\n{3,}')
+
 
 def cleanup():
 
@@ -25,6 +29,20 @@ def view_html():
 
     html_file = pathlib.Path(f'{CHG_FILE}.html').resolve()   # full path
     webbrowser.open(html_file.as_uri())
+
+
+def clean_text(text: str) -> str:
+    """Remove hyphenation and unnecessary spacing to get cleaned plain text."""
+    
+    text = HYPHEN_LB.sub('', text) # merge hyphenated words
+    text = re.sub(r'(?<!\n)\n(?!\n)', ' ', text)
+    text = MULTI_SPACE.sub(' ', text)
+
+    text = '\n'.join(ln.strip() for ln in text.splitlines())
+    
+    text = MULTI_NL.sub('\n\n', text)
+    
+    return text.strip()
 
 
 def text_breakdown(text: str) -> list:
@@ -46,7 +64,7 @@ def text_breakdown(text: str) -> list:
 def main():
 
     with open(SRC_FILE, "r", encoding='utf-8') as f:
-        src_ = f.read()
+        src_ = clean_text(f.read())
     
     with open(IN_FILE, 'w', encoding='utf-8') as f:
         f.write('\n'.join(text_breakdown(src_)))

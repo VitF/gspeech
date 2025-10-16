@@ -9,3 +9,4 @@ texts/*
 !texts/source.txt
 grammar_check.py
 grammar_diff.py
+pkg_install.py
