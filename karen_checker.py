@@ -55,9 +55,14 @@ def main():
         in_ = f.read()
 
     # Sentence-by-sentence text revision
+    sentences = []
     rev_ = []
     for sentence in text_breakdown(src_):
+        sentences.append(sentence)
         rev_.append(karen_correct(text=sentence, standalone=False))
+    
+    with open("./output/sentences.txt", 'w', encoding='utf-8') as f:
+        f.write('\n'.join(sentences))
 
     with open(REV_FILE, 'w', encoding='utf-8') as f:
         f.write('\n'.join(rev_))
@@ -65,7 +70,7 @@ def main():
     with open(REV_FILE, "r", encoding='utf-8') as f:
         rev_ = f.read()
     
-    # Changes inspection
+    # Changes inspection and HTML file preparation
     delta = HtmlDiff().make_file(in_.splitlines(), rev_.splitlines())
     with open(f"{CHG_FILE}_raw.html", "w", encoding="utf-8") as f:
         f.write(delta)
