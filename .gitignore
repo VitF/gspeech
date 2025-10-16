@@ -4,7 +4,6 @@ __pycache__/*
 karen_venv/*
 models/*
 output/*
-!output/changes.html
 texts/*
 !texts/source.txt
 grammar_check.py
