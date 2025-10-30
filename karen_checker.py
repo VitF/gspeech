@@ -1,6 +1,7 @@
 from difflib import HtmlDiff
 import pathlib
 import re
+import spacy
 import webbrowser
 
 from karen import *
@@ -15,6 +16,10 @@ TEMPLATE    =   "./template.html"
 HYPHEN_LB   = re.compile(r'(?<=\w)-\s*\n\s*(?=\w)')
 MULTI_SPACE = re.compile(r'[ \t]{2,}')
 MULTI_NL    = re.compile(r'\n{3,}')
+
+reader = spacy.load("en_core_web_sm")
+for abbr in ABBREVIATIONS:
+    reader.tokenizer.add_special_case(abbr, [{"ORTH": abbr}])
 
 
 def cleanup():
@@ -47,16 +52,23 @@ def clean_text(text: str) -> str:
 
 def text_breakdown(text: str) -> list:
 
-    # Split the text keeping the punctuation
-    parts  = [s.strip() for s in re.split(r'([.!?]+)\s+', text) if s.strip()]
-    sentences, ii = [], 0
-    while ii < len(parts):
-        sentence = parts[ii]
-        if ii+1 < len(parts) and parts[ii+1] in {'.', '!', '?', '...'}:
-            sentence += parts[ii+1]
-            ii += 1
-        sentences.append(sentence)
-        ii += 1
+    # # Split the text keeping the punctuation
+    # parts  = [s.strip() for s in re.split(r'([.!?]+)\s+', text) if s.strip()]
+    # sentences, ii = [], 0
+    # while ii < len(parts):
+    #     sentence = parts[ii]
+    #     if ii+1 < len(parts) and parts[ii+1] in {'.', '!', '?', '...'}:
+    #         sentence += parts[ii+1]
+    #         ii += 1
+    #     sentences.append(sentence)
+    #     ii += 1
+    
+    # if "sentencizer" in reader.pipe_names:
+    #     reader.remove_pipe("sentencizer")
+    # reader.enable_pipe("parser")
+    sentences = []
+    for sentence in reader(text).sents:
+        sentences.append(sentence.text)
     
     return sentences
 

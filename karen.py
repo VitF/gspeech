@@ -2,6 +2,10 @@ import sys
 from karen_venv_build import MODEL_PATH
 from llama_cpp import Llama
 
+
+ABBREVIATIONS = ["B.Sc.", "M.Sc.", "Ph.D.", "Dr.", "Prof."]
+
+
 def correct_text(LLM, text: str, standalone: bool=True) -> str:
     """Return Karen-corrected text."""
 
